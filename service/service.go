@@ -74,6 +74,27 @@ func UpdateLastStockPrices() {
 	}
 }
 
+func UpdatePrdictionLog() {
+	stocks := GetSupportedStockPrices()
+	client := &http.Client{}
+	for i := 0; i < len(stocks); i++ {
+		finalUrl := stringutil.CleanStr(apiBaseAddres + "​/stats/" + stocks[i])
+
+		request, err := http.NewRequest("PUT", finalUrl, strings.NewReader(""))
+		if err != nil {
+			fmt.Println(err.Error())
+		}
+		resp, err := client.Do(request)
+
+		if resp.Status != "200 OK" || err != nil {
+			fmt.Println(stocks[i] + " could not been updated")
+		}
+		if resp.Status == "200 OK" {
+			fmt.Println(stocks[i] + " has been updated sucessfully")
+		}
+	}
+}
+
 func MakePredictions() {
 	stocks := GetSupportedStockPrices()
 
