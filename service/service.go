@@ -34,21 +34,17 @@ func BootstrapFirstHistories() {
 
 func SaveLastStockPrices() {
 	stocks := GetSupportedStockPrices()
-	client := &http.Client{}
+
 	for i := 0; i < len(stocks); i++ {
 		finalUrl := stringutil.CleanStr(apiBaseAddres + "​/data​/save-last​/" + stocks[i])
 
-		request, err := http.NewRequest("PUT", finalUrl, strings.NewReader(""))
-		if err != nil {
-			fmt.Println(err.Error())
-		}
-		resp, err := client.Do(request)
-
+		resp, err := http.Post(finalUrl, "application/json", strings.NewReader(""))
 		if resp.Status != "200 OK" || err != nil {
-			fmt.Println(stocks[i] + " could not been updated")
+			fmt.Println(err.Error())
+			fmt.Println(stocks[i] + " could not been saved")
 		}
 		if resp.Status == "200 OK" {
-			fmt.Println(stocks[i] + " has been updated sucessfully")
+			fmt.Println(stocks[i] + " has been saved sucessfully")
 		}
 	}
 }
@@ -69,7 +65,28 @@ func UpdateLastStockPrices() {
 			fmt.Println(stocks[i] + " could not been updated")
 		}
 		if resp.Status == "200 OK" {
-			fmt.Println(stocks[i] + " has been updated sucessfully")
+			fmt.Println(stocks[i] + " prices has been updated sucessfully")
+		}
+	}
+}
+
+func UpdatePrdictionLog() {
+	stocks := GetSupportedStockPrices()
+	client := &http.Client{}
+	for i := 0; i < len(stocks); i++ {
+		finalUrl := stringutil.CleanStr(apiBaseAddres + "​/stats/" + stocks[i])
+
+		request, err := http.NewRequest("PUT", finalUrl, strings.NewReader(""))
+		if err != nil {
+			fmt.Println(err.Error())
+		}
+		resp, err := client.Do(request)
+
+		if resp.Status != "200 OK" || err != nil {
+			fmt.Println(stocks[i] + " could not been updated")
+		}
+		if resp.Status == "200 OK" {
+			fmt.Println(stocks[i] + " log has been updated sucessfully")
 		}
 	}
 }
