@@ -65,7 +65,7 @@ func UpdateLastStockPrices() {
 			fmt.Println(stocks[i] + " could not been updated")
 		}
 		if resp.Status == "200 OK" {
-			fmt.Println(stocks[i] + " has been updated sucessfully")
+			fmt.Println(stocks[i] + " prices has been updated sucessfully")
 		}
 	}
 }
