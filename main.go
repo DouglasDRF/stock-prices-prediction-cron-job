@@ -11,7 +11,9 @@ func main() {
 	fmt.Println("Automation data handler is running...")
 	c := cron.New(cron.WithSeconds())
 
-	c.AddFunc("0 0 10 * * *", service.SaveLastStockPrices)
+	service.BootstrapFirstHistories()
+
+	c.AddFunc("0 20 10 * * *", service.SaveLastStockPrices)
 	c.AddFunc("0 * 11-18 * * *", service.UpdateLastStockPrices)
 
 	c.AddFunc("0 20 18 * * *", service.UpdatePrdictionLog)
