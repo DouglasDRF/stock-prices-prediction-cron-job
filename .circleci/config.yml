@@ -9,4 +9,4 @@ workflows:
     jobs:
       - aws-ecr/build-and-push-image:
           repo: "${CIRCLE_PROJECT_REPONAME}"
-          tag: "${CIRCLE_BUILD_NUM}"
+          tag: "latest"
