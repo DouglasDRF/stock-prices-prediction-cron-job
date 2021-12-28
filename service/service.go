@@ -38,7 +38,13 @@ func SaveLastStockPrices() {
 	for i := 0; i < len(stocks); i++ {
 		finalUrl := stringutil.CleanStr(apiBaseAddres + "​/data​/save-last​/" + stocks[i])
 
-		resp, err := http.Post(finalUrl, "application/json", strings.NewReader(""))
+		defer func() {
+			if r := recover(); r != nil {
+				fmt.Println("Application has recoverd from error: ", r)
+			}
+		}()
+
+		resp, err := http.Post(finalUrl, "application/json", nil)
 		if resp.Status != "200 OK" || err != nil {
 			fmt.Println(err.Error())
 			fmt.Println(stocks[i] + " could not been saved")
