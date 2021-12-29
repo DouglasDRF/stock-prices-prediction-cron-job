@@ -12,9 +12,11 @@ import (
 )
 
 var apiBaseAddres string = os.Getenv("STOCK_PREDICTIONS_API")
+var pastStocksRef string = os.Getenv("PAST_STOCKS_REF")
 
 func BootstrapFirstHistories() {
-	stocks := GetSupportedStockPrices()
+
+	stocks := GetNonCompliantPastDaysStocks()
 	for i := 0; i < len(stocks); i++ {
 		finalUrl := stringutil.CleanStr(apiBaseAddres + "​/data​/fill-history​/" + stocks[i])
 
@@ -26,7 +28,7 @@ func BootstrapFirstHistories() {
 			fmt.Println(stocks[i] + " could not been updated")
 		}
 		if resp.Status == "200 OK" {
-			fmt.Println(stocks[i] + " has been updated sucessfully")
+			fmt.Println(stocks[i] + " has been bootstrapped sucessfully")
 		}
 		time.Sleep(1000 * time.Millisecond)
 	}
@@ -117,6 +119,25 @@ func MakePredictions() {
 func GetSupportedStockPrices() []string {
 
 	resp, err := http.Get(apiBaseAddres + "/data/supported-stocks")
+	var stocks []string
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return stocks
+	}
+	defer resp.Body.Close()
+	bodyBytes, err := ioutil.ReadAll(resp.Body)
+
+	json.Unmarshal(bodyBytes, &stocks)
+	return stocks
+}
+
+func GetNonCompliantPastDaysStocks() []string {
+
+	if len(pastStocksRef) == 0 {
+		pastStocksRef = "40"
+	}
+	resp, err := http.Get(apiBaseAddres + "/data/supported-stocks-non-compliant/" + pastStocksRef)
 	var stocks []string
 
 	if err != nil {

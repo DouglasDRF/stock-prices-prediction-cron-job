@@ -12,6 +12,7 @@ func main() {
 	c := cron.New(cron.WithSeconds())
 
 	service.BootstrapFirstHistories()
+	fmt.Println("Bootstrap finished")
 
 	c.AddFunc("0 20 10 * * *", service.SaveLastStockPrices)
 	c.AddFunc("0 * 11-18 * * *", service.UpdateLastStockPrices)
