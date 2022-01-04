@@ -1,18 +1,40 @@
 package service
 
 import (
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
 	"os"
 	"stockpredictionscronjob/stringutil"
-	"strings"
 	"time"
 )
 
 var apiBaseAddres string = os.Getenv("STOCK_PREDICTIONS_API")
+var apiKey string = os.Getenv("STOCK_PREDICTIONS_API_KEY")
+var apiSecret string = os.Getenv("STOCK_PREDICTIONS_API_SECRET")
 var pastStocksRef string = os.Getenv("PAST_STOCKS_REF")
+var client = &http.Client{}
+
+func basicAuth(username, password string) string {
+	auth := username + ":" + password
+	return base64.StdEncoding.EncodeToString([]byte(auth))
+}
+
+func doAuthenticatedRequest(method string, url string) (*http.Response, error) {
+
+	req, err := http.NewRequest(method, url, nil)
+
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+
+	req.Header.Add("Authorization", "Basic "+basicAuth(apiKey, apiSecret))
+	resp, err := client.Do(req)
+
+	return resp, err
+}
 
 func BootstrapFirstHistories() {
 
@@ -20,7 +42,8 @@ func BootstrapFirstHistories() {
 	for i := 0; i < len(stocks); i++ {
 		finalUrl := stringutil.CleanStr(apiBaseAddres + "​/data​/fill-history​/" + stocks[i])
 
-		resp, err := http.Post(finalUrl, "application/json", strings.NewReader(""))
+		resp, err := doAuthenticatedRequest("POST", finalUrl)
+
 		if err != nil {
 			fmt.Println(err.Error())
 		}
@@ -46,7 +69,8 @@ func SaveLastStockPrices() {
 			}
 		}()
 
-		resp, err := http.Post(finalUrl, "application/json", nil)
+		resp, err := doAuthenticatedRequest("POST", finalUrl)
+
 		if resp.Status != "200 OK" || err != nil {
 			fmt.Println(err.Error())
 			fmt.Println(stocks[i] + " could not been saved")
@@ -59,15 +83,10 @@ func SaveLastStockPrices() {
 
 func UpdateLastStockPrices() {
 	stocks := GetSupportedStockPrices()
-	client := &http.Client{}
 	for i := 0; i < len(stocks); i++ {
 		finalUrl := stringutil.CleanStr(apiBaseAddres + "​/data​/update-last​/" + stocks[i])
 
-		request, err := http.NewRequest("PUT", finalUrl, strings.NewReader(""))
-		if err != nil {
-			fmt.Println(err.Error())
-		}
-		resp, err := client.Do(request)
+		resp, err := doAuthenticatedRequest("PUT", finalUrl)
 
 		if resp.Status != "200 OK" || err != nil {
 			fmt.Println(stocks[i] + " could not been updated")
@@ -80,15 +99,10 @@ func UpdateLastStockPrices() {
 
 func UpdatePrdictionLog() {
 	stocks := GetSupportedStockPrices()
-	client := &http.Client{}
 	for i := 0; i < len(stocks); i++ {
 		finalUrl := stringutil.CleanStr(apiBaseAddres + "​/stats/" + stocks[i])
 
-		request, err := http.NewRequest("PUT", finalUrl, strings.NewReader(""))
-		if err != nil {
-			fmt.Println(err.Error())
-		}
-		resp, err := client.Do(request)
+		resp, err := doAuthenticatedRequest("PUT", finalUrl)
 
 		if resp.Status != "200 OK" || err != nil {
 			fmt.Println(stocks[i] + " could not been updated")
