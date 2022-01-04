@@ -1,1 +1,1 @@
-worker: stockpredictionscronjob
+worker: bin/stockpredictionscronjob
