@@ -51,7 +51,7 @@ func BootstrapFirstHistories() {
 			fmt.Println(stocks[i] + " could not been updated")
 		}
 		if resp.Status == "200 OK" {
-			fmt.Println(stocks[i] + " has been bootstrapped sucessfully")
+			fmt.Println(stringutil.GetCurrentTimeStr() + stocks[i] + " has been bootstrapped sucessfully")
 		}
 		time.Sleep(1000 * time.Millisecond)
 	}
@@ -89,10 +89,10 @@ func UpdateLastStockPrices() {
 		resp, err := doAuthenticatedRequest("PUT", finalUrl)
 
 		if resp.Status != "200 OK" || err != nil {
-			fmt.Println(stocks[i] + " could not been updated")
+			fmt.Println(stringutil.GetCurrentTimeStr() + stocks[i] + " could not been updated")
 		}
 		if resp.Status == "200 OK" {
-			fmt.Println(stocks[i] + " prices has been updated sucessfully")
+			fmt.Println(stringutil.GetCurrentTimeStr() + stocks[i] + " prices has been updated sucessfully")
 		}
 	}
 }
@@ -108,7 +108,7 @@ func UpdatePrdictionLog() {
 			fmt.Println(stocks[i] + " could not been updated")
 		}
 		if resp.Status == "200 OK" {
-			fmt.Println(stocks[i] + " log has been updated sucessfully")
+			fmt.Println(stringutil.GetCurrentTimeStr() + stocks[i] + " log has been updated sucessfully")
 		}
 	}
 }
@@ -117,7 +117,7 @@ func MakePredictions() {
 	stocks := GetSupportedStockPrices()
 
 	for i := 0; i < len(stocks); i++ {
-		finalUrl := stringutil.CleanStr(apiBaseAddres + "​/predict/nextday/" + stocks[i])
+		finalUrl := stringutil.CleanStr(apiBaseAddres + "​/predict/nextday/" + stocks[i] + "?save_log=true")
 
 		resp, err := http.Get(finalUrl)
 		if err != nil || resp.Status != "200 OK" {

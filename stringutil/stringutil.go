@@ -2,6 +2,7 @@ package stringutil
 
 import (
 	"strings"
+	"time"
 	"unicode"
 )
 
@@ -12,4 +13,8 @@ func CleanStr(str string) string {
 		}
 		return -1
 	}, str)
+}
+
+func GetCurrentTimeStr() string {
+	return time.Now().String() + " "
 }
