@@ -20,16 +20,7 @@ func main() {
 	c.AddFunc("0 20 18 * * *", service.UpdatePrdictionLog)
 	c.AddFunc("0 30 18 * * *", service.MakePredictions)
 
-	c.Start()
-
 	fmt.Println(c.Entries())
-	fmt.Scanln()
 
-	for {
-		var input string
-		fmt.Scanln(&input)
-		if input == "exit" {
-			break
-		}
-	}
+	c.Run()
 }
