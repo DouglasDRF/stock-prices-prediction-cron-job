@@ -24,4 +24,12 @@ func main() {
 
 	fmt.Println(c.Entries())
 	fmt.Scanln()
+
+	for {
+		var input string
+		fmt.Scanln(&input)
+		if input == "exit" {
+			break
+		}
+	}
 }
