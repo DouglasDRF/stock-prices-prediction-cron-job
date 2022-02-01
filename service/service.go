@@ -40,7 +40,7 @@ func BootstrapFirstHistories() {
 
 	stocks := GetNonCompliantPastDaysStocks()
 	for i := 0; i < len(stocks); i++ {
-		finalUrl := stringutil.CleanStr(apiBaseAddres + "​/data​/fill-history​/" + stocks[i])
+		finalUrl := stringutil.CleanStr(apiBaseAddres + "​/data​/stock-prices/history​/" + stocks[i])
 
 		resp, err := doAuthenticatedRequest("POST", finalUrl)
 
@@ -61,7 +61,7 @@ func SaveLastStockPrices() {
 	stocks := GetSupportedStockPrices()
 
 	for i := 0; i < len(stocks); i++ {
-		finalUrl := stringutil.CleanStr(apiBaseAddres + "​/data​/save-last​/" + stocks[i])
+		finalUrl := stringutil.CleanStr(apiBaseAddres + "​/data​/stock-prices​/" + stocks[i])
 
 		defer func() {
 			if r := recover(); r != nil {
@@ -84,7 +84,7 @@ func SaveLastStockPrices() {
 func UpdateLastStockPrices() {
 	stocks := GetSupportedStockPrices()
 	for i := 0; i < len(stocks); i++ {
-		finalUrl := stringutil.CleanStr(apiBaseAddres + "​/data​/update-last​/" + stocks[i])
+		finalUrl := stringutil.CleanStr(apiBaseAddres + "​/data​/stock-prices/" + stocks[i])
 
 		resp, err := doAuthenticatedRequest("PUT", finalUrl)
 
@@ -100,7 +100,7 @@ func UpdateLastStockPrices() {
 func UpdatePrdictionLog() {
 	stocks := GetSupportedStockPrices()
 	for i := 0; i < len(stocks); i++ {
-		finalUrl := stringutil.CleanStr(apiBaseAddres + "​/stats/" + stocks[i])
+		finalUrl := stringutil.CleanStr(apiBaseAddres + "​/stats/predictions/" + stocks[i])
 
 		resp, err := doAuthenticatedRequest("PUT", finalUrl)
 
@@ -117,7 +117,7 @@ func MakePredictions() {
 	stocks := GetSupportedStockPrices()
 
 	for i := 0; i < len(stocks); i++ {
-		finalUrl := stringutil.CleanStr(apiBaseAddres + "​/predict/nextday/" + stocks[i] + "?save_log=true")
+		finalUrl := stringutil.CleanStr(apiBaseAddres + "​/prediction/nextday/" + stocks[i] + "?save_log=true")
 
 		resp, err := http.Get(finalUrl)
 		if err != nil || resp.Status != "200 OK" {
@@ -151,7 +151,7 @@ func GetNonCompliantPastDaysStocks() []string {
 	if len(pastStocksRef) == 0 {
 		pastStocksRef = "40"
 	}
-	resp, err := http.Get(apiBaseAddres + "/data/supported-stocks-non-compliant/" + pastStocksRef)
+	resp, err := http.Get(apiBaseAddres + "/data/supported-stocks/non-compliant/" + pastStocksRef)
 	var stocks []string
 
 	if err != nil {
