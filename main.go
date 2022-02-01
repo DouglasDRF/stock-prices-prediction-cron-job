@@ -20,10 +20,10 @@ func main() {
 	c.AddFunc("15 10 * * MON-FRI", service.SaveLastStockPrices)
 
 	c.AddFunc("0/2 11-17 * * MON-FRI", service.UpdateLastStockPrices)
-	c.AddFunc("0 18 * * MON-FRI", service.UpdateLastStockPrices)
+	c.AddFunc("10 18 * * MON-FRI", service.UpdateLastStockPrices)
 
-	c.AddFunc("15 18 * * MON-FRI", service.UpdatePrdictionLog)
-	c.AddFunc("30 18 * * MON-FRI", service.MakePredictions)
+	c.AddFunc("15 18 * * MON-FRI", service.MakePredictions)
+	c.AddFunc("30 18 * * MON-FRI", service.UpdatePrdictionLog)
 
 	fmt.Println(c.Entries())
 
