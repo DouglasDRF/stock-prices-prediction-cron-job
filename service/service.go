@@ -9,6 +9,8 @@ import (
 	"os"
 	"stockpredictionscronjob/stringutil"
 	"time"
+
+	"github.com/newrelic/go-agent/v3/newrelic"
 )
 
 var apiBaseAddres string = os.Getenv("STOCK_PREDICTIONS_API")
@@ -16,10 +18,15 @@ var apiKey string = os.Getenv("STOCK_PREDICTIONS_API_KEY")
 var apiSecret string = os.Getenv("STOCK_PREDICTIONS_API_SECRET")
 var pastStocksRef string = os.Getenv("PAST_STOCKS_REF")
 var client = &http.Client{}
+var nrApp *newrelic.Application
 
 func basicAuth(username, password string) string {
 	auth := username + ":" + password
 	return base64.StdEncoding.EncodeToString([]byte(auth))
+}
+
+func SetNewRelicAgent(app *newrelic.Application) {
+	nrApp = app
 }
 
 func doAuthenticatedRequest(method string, url string) (*http.Response, error) {
@@ -140,7 +147,7 @@ func GetSupportedStockPrices() []string {
 		return stocks
 	}
 	defer resp.Body.Close()
-	bodyBytes, err := ioutil.ReadAll(resp.Body)
+	bodyBytes, _ := ioutil.ReadAll(resp.Body)
 
 	json.Unmarshal(bodyBytes, &stocks)
 	return stocks
@@ -159,7 +166,7 @@ func GetNonCompliantPastDaysStocks() []string {
 		return stocks
 	}
 	defer resp.Body.Close()
-	bodyBytes, err := ioutil.ReadAll(resp.Body)
+	bodyBytes, _ := ioutil.ReadAll(resp.Body)
 
 	json.Unmarshal(bodyBytes, &stocks)
 	return stocks
