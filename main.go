@@ -13,7 +13,7 @@ import (
 func main() {
 	var newRelicLicenseKey string = os.Getenv("NEW_RELIC_LICENSE_KEY")
 	app, err := newrelic.NewApplication(
-		newrelic.ConfigAppName("Your Application Name"),
+		newrelic.ConfigAppName("stock-predictions-cronjob"),
 		newrelic.ConfigLicense(newRelicLicenseKey),
 	)
 
